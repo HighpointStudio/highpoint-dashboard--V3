@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Highpoint Studio Dashboard V2</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <div class="brand-logo">HS</div>
+                <div class="brand-text">
+                    <h2>Highpoint Studio</h2>
+                    <span>Dashboard V2</span>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#overview" class="nav-item active" data-tab="overview">
+                    <i class="fa-solid fa-chart-pie"></i> <span>Overview</span>
+                </a>
+                <a href="#members" class="nav-item" data-tab="members">
+                    <i class="fa-solid fa-users"></i> <span>Members</span>
+                </a>
+                <a href="#sessions" class="nav-item" data-tab="sessions">
+                    <i class="fa-solid fa-calendar-check"></i> <span>Sessions</span>
+                </a>
+                <a href="#roblox" class="nav-item" data-tab="roblox">
+                    <i class="fa-solid fa-gamepad"></i> <span>Roblox Integration</span>
+                </a>
+                <a href="#ranks" class="nav-item" data-tab="ranks">
+                    <i class="fa-solid fa-shield-halved"></i> <span>Ranks & Access</span>
+                </a>
+                <a href="#discord-logs" class="nav-item" data-tab="discord-logs">
+                    <i class="fa-solid fa-list-check"></i> <span>Discord Logs</span>
+                </a>
+                <a href="#settings" class="nav-item" data-tab="settings">
+                    <i class="fa-solid fa-gear"></i> <span>API & Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">A</div>
+                    <div class="user-info">
+                        <div class="username">Administrator</div>
+                        <div class="role">Owner Access</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header Bar -->
+            <header class="top-header">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                
+                <div class="server-selector-container">
+                    <label for="serverSelect"><i class="fa-solid fa-server"></i> Selected Server:</label>
+                    <select id="serverSelect" class="server-dropdown">
+                        <option value="scp">SCP: Site Operations</option>
+                        <option value="community">Highpoint Community</option>
+                    </select>
+                </div>
+
+                <div class="header-status">
+                    <span class="status-indicator online"></span>
+                    <span class="status-text">Backend Connected</span>
+                </div>
+            </header>
+
+            <!-- Dynamic Tab Contents -->
+            <div class="content-body">
+                <!-- Overview Tab -->
+                <section id="overview-tab" class="tab-content active">
+                    <div class="welcome-banner">
+                        <h1>Good evening, Admin 👋</h1>
+                        <p>Welcome back to Highpoint Studio Dashboard V2. Here is your community overview for <strong id="current-server-name">SCP: Site Operations</strong>.</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                            <div class="stat-data">
+                                <h3>Total Members</h3>
+                                <div class="value" id="stat-members">1,248</div>
+                                <span class="trend positive">+12% this week</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fa-solid fa-bolt"></i></div>
+                            <div class="stat-data">
+                                <h3>Active Sessions</h3>
+                                <div class="value" id="stat-sessions">4 Active</div>
+                                <span class="trend neutral">2 Scheduled today</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fa-brands fa-discord"></i></div>
+                            <div class="stat-data">
+                                <h3>Discord Status</h3>
+                                <div class="value text-success">Connected</div>
+                                <span class="trend positive">100% Uptime</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fa-solid fa-gamepad"></i></div>
+                            <div class="stat-data">
+                                <h3>Roblox Game Sync</h3>
+                                <div class="value text-success" id="stat-roblox-status">Verified</div>
+                                <span class="trend positive">Group ID #89211</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <h2>Activity Overview</h2>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="activityChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card activity-card">
+                            <div class="card-header">
+                                <h2>Recent Activity Log</h2>
+                            </div>
+                            <ul class="activity-list" id="recent-activity-list">
+                                <!-- Dynamic items via JS -->
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Members Tab -->
+                <section id="members-tab" class="tab-content">
+                    <div class="section-header">
+                        <h2>Community Members</h2>
+                        <div class="search-bar">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="memberSearch" placeholder="Search by Roblox or Discord ID...">
+                        </div>
+                    </div>
+                    <div class="card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Roblox ID</th>
+                                    <th>Discord Tag</th>
+                                    <th>Rank</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="members-table-body">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Sessions Tab -->
+                <section id="sessions-tab" class="tab-content">
+                    <div class="section-header">
+                        <h2>Sessions & Events</h2>
+                        <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Schedule Session</button>
+                    </div>
+                    <div class="sessions-grid" id="sessions-container">
+                        <!-- Dynamic Session Cards -->
+                    </div>
+                </section>
+
+                <!-- Roblox Integration Tab -->
+                <section id="roblox-tab" class="tab-content">
+                    <div class="section-header">
+                        <h2>Roblox Group & Game Integration</h2>
+                    </div>
+                    <div class="card">
+                        <div class="integration-status-box">
+                            <i class="fa-solid fa-circle-check text-success"></i>
+                            <div>
+                                <h3>Roblox API Connection Active</h3>
+                                <p>Last synced: <span id="last-sync-time">Just now</span></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Roblox Group ID</label>
+                            <input type="text" class="input-control" value="8921102">
+                        </div>
+                        <div class="form-group">
+                            <label>Place ID (Game Server)</label>
+                            <input type="text" class="input-control" value="49201931">
+                        </div>
+                        <button class="btn btn-primary">Save Integration Settings</button>
+                    </div>
+                </section>
+
+                <!-- Ranks Tab -->
+                <section id="ranks-tab" class="tab-content">
+                    <div class="section-header">
+                        <h2>Rank & Permission Hierarchy</h2>
+                    </div>
+                    <div class="card">
+                        <p>Manage synchronization between Roblox Group Ranks and Dashboard Permissions.</p>
+                    </div>
+                </section>
+
+                <!-- Discord Logs Tab -->
+                <section id="discord-logs-tab" class="tab-content">
+                    <div class="section-header">
+                        <h2>Discord & Audit Logs</h2>
+                    </div>
+                    <div class="card">
+                        <ul class="activity-list" id="full-audit-logs">
+                            <!-- Dynamic logs -->
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Settings Tab -->
+                <section id="settings-tab" class="tab-content">
+                    <div class="section-header">
+                        <h2>API & Dashboard Settings</h2>
+                    </div>
+                    <div class="card">
+                        <h3>API Keys & Webhooks</h3>
+                        <p>Keep your webhook secrets secure side-server.</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
